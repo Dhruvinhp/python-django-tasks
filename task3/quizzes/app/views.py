@@ -1,20 +1,12 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
-from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework.permissions import AllowAny
 
 from .models import Quiz, UserQuiz, User
 from .serializers import (
-    LoginSerializer,
     UserSerializer,
     QuizSerializer,
     UserQuizSerializer,
 )
-
-
-class LoginView(TokenObtainPairView):
-    permission_classes = (AllowAny,)
-    serializer_class = LoginSerializer
 
 
 class RegisterView(generics.CreateAPIView):
