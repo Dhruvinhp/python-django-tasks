@@ -1,0 +1,32 @@
+You are tasked with designing a meeting system. The system must handle requests to schedule
+meetings for different teams within a company, where each team has a set of members, and each
+member has their personal calendar filled with meetings. The goal is to find an optimal time slot
+for a new meeting that involves members from one or more teams, ensuring no conflicts with
+existing meetings, and considering working hours and time zone differences.
+Requirements:
+
+1. Meeting Request Input:
+○ A list of teams and their members.
+○ Each member's calendar for the week (assume working days are Monday to
+Friday), which includes their existing meetings (start and end times) and working
+hours. All times are in their local timezone.
+○ The duration of the new meeting.
+○ The list of teams involved in the new meeting.
+
+2. Constraints:
+○ Meetings cannot overlap with each other.
+○ Meetings can only be scheduled during a member's working hours.
+○ Consider time zone differences; all members must attend within their respective
+working hours.
+
+3. Output:
+○ The optimal start time for the new meeting that satisfies all constraints, if
+possible.
+○ If no such time slot is available, return an indication that the meeting cannot be
+scheduled.
+Advanced Considerations:
+● Optimize the solution for the least possible computational complexity.
+● The solution should handle scenarios where the number of teams, members, and meetings
+can scale significantly.
+● Provide a way to handle edge cases gracefully, such as non-standard working hours,
+public holidays, and meetings that span multiple time slots.
