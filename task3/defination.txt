@@ -1,0 +1,9 @@
+Task: Implementing a Django web application that incorporates user authentication using JSON Web
+      Tokens (JWT) & stores user data in a PostgreSQL database. Also design implementation & logic
+      to manage a user's quizzes with the following requirements:
+      ➢ Each user is assigned a set of 5 quizzes.
+      ➢ Quizzes are sequential, meaning a user must complete Quiz 1 before accessing
+      Quiz 2, and so on.
+      ➢ Users cannot attempt Quiz 5 until they have completed Quiz 4, and similarly for
+      the other quizzes.
+
