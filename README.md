@@ -18,6 +18,7 @@ python3 -m venv env
 <br>
 2: Activate virtualenv environment <br><br>
 In Ubuntu and MacOS, run the following command in your terminal:
+
 ```bash
 source venv/bin/activate
 ```
