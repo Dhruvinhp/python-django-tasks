@@ -1,5 +1,6 @@
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions, status, viewsets
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 from .models import Quiz, UserQuiz, User
 from .serializers import (
@@ -9,7 +10,7 @@ from .serializers import (
 )
 
 
-class RegisterView(generics.CreateAPIView):
+class UserView(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = (permissions.AllowAny,)
@@ -24,12 +25,12 @@ class RegisterView(generics.CreateAPIView):
 class QuizListView(generics.ListAPIView):
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
 
 
 class UserQuizListView(generics.ListAPIView):
     serializer_class = UserQuizSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
@@ -39,7 +40,7 @@ class UserQuizListView(generics.ListAPIView):
 class QuizDetailView(generics.RetrieveAPIView):
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         user = request.user
