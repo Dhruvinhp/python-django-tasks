@@ -13,7 +13,7 @@ from .serializers import (
 class UserView(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         user = serializer.save()
