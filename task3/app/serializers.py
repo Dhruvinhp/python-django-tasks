@@ -1,13 +1,11 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
-from .models import Quiz, UserQuiz
-from django.contrib.auth import authenticate
+from .models import Quiz, UserQuiz, User
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = "__all__"
+        fields = ("id", "username", "email", "password")
 
 
 class QuizSerializer(serializers.ModelSerializer):

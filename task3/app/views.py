@@ -1,6 +1,15 @@
+from django.contrib.auth import authenticate
+from django.contrib.auth.hashers import make_password
 from rest_framework import generics, permissions, status, viewsets
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from rest_framework.exceptions import AuthenticationFailed
+from rest_framework.authtoken.models import Token
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 
 from .models import Quiz, UserQuiz, User
 from .serializers import (
@@ -13,10 +22,11 @@ from .serializers import (
 class UserView(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = (permissions.AllowAny,)
 
     def perform_create(self, serializer):
-        user = serializer.save()
+        data = self.request.data.copy()
+        user = serializer.save(password=make_password(data["password"]))
         quizzes = Quiz.objects.all()[:5]
         for quiz in quizzes:
             UserQuiz.objects.create(user=user, quiz=quiz)
