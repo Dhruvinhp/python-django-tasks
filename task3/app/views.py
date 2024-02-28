@@ -9,7 +9,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.authtoken.models import Token
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-
+from .permissions import QuizPermission
 
 from .models import Quiz, UserQuiz, User
 from .serializers import (
@@ -32,27 +32,12 @@ class UserView(viewsets.ModelViewSet):
             UserQuiz.objects.create(user=user, quiz=quiz)
 
 
-class QuizListView(generics.ListAPIView):
+class QuizListView(viewsets.ModelViewSet):
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [QuizPermission]
 
-
-class UserQuizListView(generics.ListAPIView):
-    serializer_class = UserQuizSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user
-        return UserQuiz.objects.filter(user=user)
-
-
-class QuizDetailView(generics.RetrieveAPIView):
-    queryset = Quiz.objects.all()
-    serializer_class = QuizSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, *args, **kwargs):
+    def retrieve(self, request, *args, **kwargs):
         user = request.user
         quiz_id = kwargs.get("pk")
         try:
@@ -78,13 +63,24 @@ class QuizDetailView(generics.RetrieveAPIView):
                 {"error": "Quiz does not exist."},
                 status=status.HTTP_404_NOT_FOUND,
             )
-        return super().get(request, *args, **kwargs)
+
+        serializer = self.get_serializer(current_quiz)
+        return Response(serializer.data)
+
+
+class UserQuizListView(generics.ListAPIView):
+    serializer_class = UserQuizSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return UserQuiz.objects.filter(user=user)
 
 
 class CompleteQuizView(generics.UpdateAPIView):
     queryset = UserQuiz.objects.all()
     serializer_class = UserQuizSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -110,7 +106,9 @@ class CompleteQuizView(generics.UpdateAPIView):
                     )
             instance.completed = True
             instance.save()
-            return Response("Quiz completed successfully")
+            return Response(
+                {"message": "Quiz completed successfully"}, status=status.HTTP_200_OK
+            )
         except Quiz.DoesNotExist:
             return Response(
                 {"error": "Quiz does not exist."},
