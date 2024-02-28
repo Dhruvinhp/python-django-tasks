@@ -7,4 +7,6 @@ class QuizPermission(BasePermission):
     """
 
     def has_permission(self, request, view):
-        return request.method == "POST"
+        if request.method == "POST":
+            return True
+        return request.user.is_authenticated
