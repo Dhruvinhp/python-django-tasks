@@ -9,7 +9,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.authtoken.models import Token
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .permissions import QuizPermission
+from .permissions import PostPermission
 
 from .models import Quiz, UserQuiz, User
 from .serializers import (
@@ -22,7 +22,7 @@ from .serializers import (
 class UserView(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = [PostPermission]
 
     def perform_create(self, serializer):
         data = self.request.data.copy()
@@ -35,7 +35,7 @@ class UserView(viewsets.ModelViewSet):
 class QuizListView(viewsets.ModelViewSet):
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
-    permission_classes = [QuizPermission]
+    permission_classes = [PostPermission]
 
     def retrieve(self, request, *args, **kwargs):
         user = request.user
@@ -86,9 +86,11 @@ class CompleteQuizView(generics.UpdateAPIView):
         instance = self.get_object()
         user = request.user
         quiz_id = instance.quiz_id
+
         try:
             current_quiz = Quiz.objects.get(pk=quiz_id)
             previous_quiz_id = current_quiz.id - 1
+
             if previous_quiz_id > 0:
                 try:
                     previous_user_quiz = UserQuiz.objects.get(
@@ -104,8 +106,16 @@ class CompleteQuizView(generics.UpdateAPIView):
                         {"error": "Complete the previous quiz first."},
                         status=status.HTTP_400_BAD_REQUEST,
                     )
+
+            if instance.completed:
+                return Response(
+                    {"error": "Quiz is already completed."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
             instance.completed = True
             instance.save()
+
             return Response(
                 {"message": "Quiz completed successfully"}, status=status.HTTP_200_OK
             )

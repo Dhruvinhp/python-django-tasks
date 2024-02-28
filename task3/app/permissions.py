@@ -1,7 +1,7 @@
 from rest_framework.permissions import BasePermission
 
 
-class QuizPermission(BasePermission):
+class PostPermission(BasePermission):
     """
     Custom permission class for Quiz add
     """
