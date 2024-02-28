@@ -54,7 +54,6 @@ def find_common_availability(team_calendars, duration):
 
 def schedule_meeting(meeting_request):
     """Schedules a meeting for a list of teams, considering constraints and time zones."""
-    meeting_request = meeting_request()
     teams = meeting_request["teams"]
     duration = meeting_request["duration"]
 
@@ -74,6 +73,7 @@ def schedule_meeting(meeting_request):
         return "No suitable time slot found for the meeting."
 
 
+meeting_request = meeting_request()
 start_time = schedule_meeting(meeting_request)
 if isinstance(start_time, datetime):
     print(f"Meeting can be scheduled at {start_time}")
