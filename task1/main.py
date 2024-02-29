@@ -34,7 +34,7 @@ class TestLogicalNegation(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    # num = int(input("Enter a number: "))
-    # result = logical_negation(num)
-    # print("Logical negation of", num, "is", result)
+    num = int(input("Enter a number: "))
+    result = logical_negation(num)
+    print("Logical negation of", num, "is", result)
     unittest.main()

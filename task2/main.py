@@ -19,10 +19,14 @@ def is_available(member_calendar, start_time, end_time):
 def find_common_availability(team_calendars, duration):
     """Finds common availability across team members considering time zones."""
     availability = defaultdict(list)
+    current_time = datetime.now(timezone.utc)
+
     for member_name, calendar_list in team_calendars.items():
         for calendar in calendar_list:
             member_timezone = tz(calendar.get("timezone"))
             for day in calendar["days"]:
+                if day["start_time"].astimezone(member_timezone) < current_time:
+                    continue
                 start_time = day["start_time"]
                 end_time = day["end_time"]
                 start_time_utc = start_time.astimezone(timezone.utc)
